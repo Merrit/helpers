@@ -30,8 +30,9 @@ import 'package:path_provider/path_provider.dart';
 /// File sparkleImage = await assetToTempDir('images/sparkle.png');
 /// ```
 Future<File> assetToTempDir(String path) async {
-  final String separator = (Platform.isWindows) ? '\\' : '/';
-  final String assetName = path.split(separator).last;
+  // Pubspec likes unix-type path separators for assets, so it should always end
+  // up being a forward slash that we need to split on.
+  final String assetName = path.split('/').last;
   final assetBytes = await rootBundle.load(path);
   final tempDir = await getTemporaryDirectory();
   final assetFile = File('${tempDir.path}/$assetName');
