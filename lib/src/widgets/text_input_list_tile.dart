@@ -4,18 +4,22 @@ import 'package:flutter/services.dart';
 /// [ListTile] which displays text, and when clicked is a [TextInput].
 class TextInputListTile extends StatefulWidget {
   final String? debugLabel;
+  final bool? editingPlaceholderText;
   final double focusedOpacity;
   final Widget? leading;
   final String placeholderText;
+  final TextAlign textAlign;
   final double unfocusedOpacity;
   final Function(String value) callback;
 
   const TextInputListTile({
     Key? key,
     this.debugLabel,
+    this.editingPlaceholderText = false,
     this.focusedOpacity = 1.00,
     this.leading,
     this.placeholderText = '',
+    this.textAlign = TextAlign.start,
     this.unfocusedOpacity = 0.50,
     required this.callback,
   }) : super(key: key);
@@ -51,7 +55,7 @@ class _TextInputListTileState extends State<TextInputListTile> {
     focusNode.addListener(() {
       if (focusNode.hasFocus) {
         setState(() => opacity = widget.focusedOpacity);
-        controller.text = '';
+        if (widget.editingPlaceholderText == false) controller.text = '';
       } else {
         setState(() => opacity = widget.unfocusedOpacity);
         controller.text = widget.placeholderText;
@@ -81,6 +85,8 @@ class _TextInputListTileState extends State<TextInputListTile> {
               title: TextField(
                 controller: controller,
                 focusNode: focusNode,
+                enableInteractiveSelection: true,
+                textAlign: widget.textAlign,
                 textCapitalization: TextCapitalization.sentences,
                 onSubmitted: (String value) {
                   if (value.trim() == '') return;
