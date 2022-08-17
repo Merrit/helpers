@@ -8,6 +8,7 @@ class TextInputListTile extends StatefulWidget {
   final double focusedOpacity;
   final Widget? leading;
   final String placeholderText;
+  final bool retainFocus;
   final TextAlign textAlign;
   final double unfocusedOpacity;
   final Function(String value) callback;
@@ -19,6 +20,7 @@ class TextInputListTile extends StatefulWidget {
     this.focusedOpacity = 1.00,
     this.leading,
     this.placeholderText = '',
+    this.retainFocus = false,
     this.textAlign = TextAlign.start,
     this.unfocusedOpacity = 0.50,
     required this.callback,
@@ -92,7 +94,13 @@ class _TextInputListTileState extends State<TextInputListTile> {
                   if (value.trim() == '') return;
 
                   widget.callback(value);
-                  FocusManager.instance.primaryFocus?.unfocus();
+
+                  if (widget.retainFocus) {
+                    setState(() => controller.text = '');
+                    focusNode.requestFocus();
+                  } else {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                  }
                 },
               ),
               onTap: () {

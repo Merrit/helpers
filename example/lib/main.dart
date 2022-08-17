@@ -87,7 +87,8 @@ class _TextInputListTileExample extends StatelessWidget {
         Flexible(
           child: TextInputListTile(
             placeholderText: 'TextInputListTile',
-            editingPlaceholderText: true,
+            editingPlaceholderText: false,
+            retainFocus: true,
             textAlign: TextAlign.center,
             callback: (value) {},
           ),
