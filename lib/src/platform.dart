@@ -1,6 +1,16 @@
 import 'dart:io' show Platform;
 
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, TargetPlatform;
+
+/// Convenience function to check if the app is running on a desktop computer.
+///
+/// Easily check if on desktop by checking `defaultTargetPlatform.isDesktop`.
+extension TargetPlatformHelper on TargetPlatform {
+  bool get isDesktop =>
+      this == TargetPlatform.linux ||
+      this == TargetPlatform.macOS ||
+      this == TargetPlatform.windows;
+}
 
 /// Convenience function to check if the app is running on a desktop computer.
 ///
