@@ -9,6 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  intl: any
   path_provider: ^2.0.11
 
 dev_dependencies:
