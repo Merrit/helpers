@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 import 'package:helpers/helpers.dart';
 import 'package:http/http.dart' as http;
 
@@ -24,122 +25,136 @@ class MyApp extends StatelessWidget {
 }
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  int selectedIndex = 0;
+  int index = 0;
+
+  void _onDestinationSelected(int index) {
+    setState(() {
+      this.index = index;
+
+      switch (index) {
+        case 1:
+          body = const Center(child: Text('Release Notes'));
+          _showReleaseNotes(context);
+          break;
+        default:
+          body = home;
+      }
+    });
+  }
+
+  static const Widget home = Center(
+    child: SizedBox(
+      width: 300,
+      height: 300,
+      child: Text('Demonstrate and test helper package features'),
+    ),
+  );
+
+  Widget body = home;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Row(
-        children: [
-          NavigationRail(
-            extended: true,
-            destinations: const [
-              NavigationRailDestination(
-                icon: Icon(Icons.time_to_leave),
-                label: Text('TextInputListTile'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.disabled_by_default_outlined),
-                label: Text('Placeholder'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.disabled_by_default_outlined),
-                label: Text('Placeholder'),
-              ),
-            ],
-            selectedIndex: selectedIndex,
-            onDestinationSelected: (int value) {
-              switch (value) {
-                case 0:
-                  break;
-                default:
-              }
+    // Define the list of destinations to be used within the app.
+    const List<NavigationDestination> destinations = <NavigationDestination>[
+      NavigationDestination(
+        label: 'Home',
+        icon: Icon(Icons.home),
+      ),
+      NavigationDestination(
+        label: 'Release Notes',
+        icon: Icon(Icons.notes),
+      ),
+    ];
 
-              setState(() => selectedIndex = value);
-            },
-          ),
-          const Expanded(
-            child: Padding(
-              padding: EdgeInsets.all(80.0),
-              child: BodyWidget(),
+    Widget bodyContainer = Stack(
+      children: [
+        const VerticalDivider(),
+        body,
+      ],
+    );
+
+    // Workaround for bug: https://github.com/flutter/flutter/issues/121392
+    final selectedLabelTextStyle = Theme.of(context)
+            .textTheme
+            .bodySmall
+            ?.copyWith(color: Theme.of(context).colorScheme.primary) ??
+        const TextStyle();
+
+    return Scaffold(
+      body: AdaptiveLayout(
+        // Primary navigation config has nothing from 0 to 600 dp screen width,
+        // then an unextended NavigationRail with no labels and just icons then an
+        // extended NavigationRail with both icons and labels.
+        primaryNavigation: SlotLayout(
+          config: <Breakpoint, SlotLayoutConfig>{
+            Breakpoints.medium: SlotLayout.from(
+              inAnimation: AdaptiveScaffold.leftOutIn,
+              key: const Key('Primary Navigation Medium'),
+              builder: (_) => AdaptiveScaffold.standardNavigationRail(
+                destinations: destinations
+                    .map((_) => AdaptiveScaffold.toRailDestination(_))
+                    .toList(),
+                onDestinationSelected: _onDestinationSelected,
+                selectedIndex: index,
+                selectedLabelTextStyle: selectedLabelTextStyle,
+              ),
             ),
-          ),
-        ],
+            Breakpoints.large: SlotLayout.from(
+              key: const Key('Primary Navigation Large'),
+              inAnimation: AdaptiveScaffold.leftOutIn,
+              builder: (_) => AdaptiveScaffold.standardNavigationRail(
+                extended: true,
+                destinations: destinations
+                    .map((_) => AdaptiveScaffold.toRailDestination(_))
+                    .toList(),
+                onDestinationSelected: _onDestinationSelected,
+                selectedIndex: index,
+                selectedLabelTextStyle: selectedLabelTextStyle,
+              ),
+            ),
+          },
+        ),
+        body: SlotLayout(
+          config: {
+            Breakpoints.standard: SlotLayout.from(
+              key: const Key('Body Standard'),
+              builder: (_) => bodyContainer,
+            ),
+          },
+        ),
       ),
     );
   }
 }
 
-class BodyWidget extends StatelessWidget {
-  const BodyWidget({super.key});
+Future<void> _showReleaseNotes(BuildContext context) async {
+  final releaseNotesService =
+      ReleaseNotesService(client: http.Client(), repository: 'merrit/nyrna');
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ElevatedButton(
-          onPressed: () {
-            _showReleaseNotesDialog(context);
-          },
-          child: const Text('Show release notes dialog'),
-        ),
-        const _TextInputListTileExample(),
-      ],
-    );
-  }
+  final releaseNotes = await releaseNotesService.getReleaseNotes('v2.11.0');
+  if (releaseNotes == null) return;
 
-  Future<void> _showReleaseNotesDialog(BuildContext context) async {
-    final releaseNotesService =
-        ReleaseNotesService(client: http.Client(), repository: 'merrit/nyrna');
+  // ignore until fixed:https://github.com/dart-lang/linter/issues/4007
+  // ignore: use_build_context_synchronously
+  if (!context.mounted) return;
 
-    final releaseNotes = await releaseNotesService.getReleaseNotes('v2.11.0');
-    if (releaseNotes == null) return;
-
-    // ignore until fixed:https://github.com/dart-lang/linter/issues/4007
-    // ignore: use_build_context_synchronously
-    if (!context.mounted) return;
-
-    showDialog(
-      context: context,
-      builder: (context) {
-        return ReleaseNotesDialog(
-          releaseNotes: releaseNotes,
-          showDonateButton: true,
-          donateCallback: () {},
-          launchURL: (url) {},
-          onClose: () {},
-        );
-      },
-    );
-  }
-}
-
-class _TextInputListTileExample extends StatelessWidget {
-  const _TextInputListTileExample({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        const Icon(Icons.flutter_dash),
-        Flexible(
-          child: TextInputListTile(
-            placeholderText: 'TextInputListTile',
-            editingPlaceholderText: false,
-            retainFocus: true,
-            textAlign: TextAlign.center,
-            callback: (value) {},
-          ),
-        ),
-        const Icon(Icons.hot_tub),
-      ],
-    );
-  }
+  showDialog(
+    context: context,
+    builder: (context) {
+      return ReleaseNotesDialog(
+        releaseNotes: releaseNotes,
+        showDonateButton: true,
+        donateCallback: () {},
+        launchURL: (url) {},
+        onClose: () {},
+      );
+    },
+  );
 }
