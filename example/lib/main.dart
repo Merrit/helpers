@@ -40,8 +40,7 @@ class _HomePageState extends State<HomePage> {
 
       switch (index) {
         case 1:
-          body = const Center(child: Text('Release Notes'));
-          _showReleaseNotes(context);
+          body = const _ReleaseNotesExample();
           break;
         default:
           body = home;
@@ -61,6 +60,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final width = mediaQuery.size.width;
+    final bool isSmall = width < 600;
+
     // Define the list of destinations to be used within the app.
     const List<NavigationDestination> destinations = <NavigationDestination>[
       NavigationDestination(
@@ -75,7 +78,7 @@ class _HomePageState extends State<HomePage> {
 
     Widget bodyContainer = Stack(
       children: [
-        const VerticalDivider(),
+        if (!isSmall) const VerticalDivider(),
         body,
       ],
     );
@@ -134,27 +137,46 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-Future<void> _showReleaseNotes(BuildContext context) async {
-  final releaseNotesService =
-      ReleaseNotesService(client: http.Client(), repository: 'merrit/nyrna');
+class _ReleaseNotesExample extends StatelessWidget {
+  const _ReleaseNotesExample();
 
-  final releaseNotes = await releaseNotesService.getReleaseNotes('v2.11.0');
-  if (releaseNotes == null) return;
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        children: [
+          const Text('Release Notes'),
+          ElevatedButton(
+            onPressed: () => _showReleaseNotes(context),
+            child: const Text('Show Release Notes'),
+          ),
+        ],
+      ),
+    );
+  }
 
-  // ignore until fixed:https://github.com/dart-lang/linter/issues/4007
-  // ignore: use_build_context_synchronously
-  if (!context.mounted) return;
+  Future<void> _showReleaseNotes(BuildContext context) async {
+    final releaseNotesService =
+        ReleaseNotesService(client: http.Client(), repository: 'merrit/nyrna');
 
-  showDialog(
-    context: context,
-    builder: (context) {
-      return ReleaseNotesDialog(
-        releaseNotes: releaseNotes,
-        showDonateButton: true,
-        donateCallback: () {},
-        launchURL: (url) {},
-        onClose: () {},
-      );
-    },
-  );
+    final releaseNotes = await releaseNotesService.getReleaseNotes('v2.11.0');
+    if (releaseNotes == null) return;
+
+    // ignore until fixed:https://github.com/dart-lang/linter/issues/4007
+    // ignore: use_build_context_synchronously
+    if (!context.mounted) return;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return ReleaseNotesDialog(
+          releaseNotes: releaseNotes,
+          showDonateButton: true,
+          donateCallback: () {},
+          launchURL: (url) {},
+          onClose: () => Navigator.of(context).pop(),
+        );
+      },
+    );
+  }
 }

@@ -85,11 +85,16 @@ class ReleaseNotesDialog extends StatelessWidget {
       donateCard = const SizedBox.shrink();
     }
 
-    return Dialog(
+    return AlertDialog(
+      // Reduce padding on mobile screens.
+      insetPadding: isSmallScreen
+          ? const EdgeInsets.only()
+          : const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+      scrollable: true,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
-      child: SizedBox(
+      content: SizedBox(
         width: width,
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -99,8 +104,14 @@ class ReleaseNotesDialog extends StatelessWidget {
             children: [
               titleWidget,
               donateCard,
-              Expanded(
-                child: Markdown(data: releaseNotes.notes),
+              MarkdownBody(
+                data: releaseNotes.notes,
+                // Alignment = start is required as a workaround for a bug when
+                // an AlertDialog has a Row with crossAxisAlignment = baseline,
+                // which the Markdown widget uses.
+                // See: https://github.com/flutter/flutter/issues/96806
+                listItemCrossAxisAlignment:
+                    MarkdownListItemCrossAxisAlignment.start,
               ),
               const SizedBox(height: 16),
               Row(
