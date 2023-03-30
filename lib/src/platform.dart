@@ -1,46 +1,12 @@
-import 'dart:io' show Platform;
-
 import 'package:flutter/foundation.dart' show kIsWeb, TargetPlatform;
 
-/// Convenience function to check if the app is running on a desktop computer.
-///
-/// Easily check if on desktop by checking `defaultTargetPlatform.isDesktop`.
 extension TargetPlatformHelper on TargetPlatform {
+  /// Returns true if the platform is a desktop platform: Linux, macOS or Windows.
   bool get isDesktop =>
       this == TargetPlatform.linux ||
       this == TargetPlatform.macOS ||
       this == TargetPlatform.windows;
+
+  /// Returns true if the platform is a mobile platform: Android, iOS or Fuchsia.
+  bool get isMobile => !isDesktop && !kIsWeb;
 }
-
-/// Convenience function to check if the app is running on a desktop computer.
-///
-/// If the currently running platform is one of Linux, Windows, or MacOS
-/// this returns true.
-///
-/// If the running platform is Android, iOS or Web this returns false.
-bool platformIsDesktop() {
-  final bool platformIsDesktop;
-
-  if (kIsWeb) {
-    platformIsDesktop = false;
-  } else {
-    switch (Platform.operatingSystem) {
-      case 'linux':
-        platformIsDesktop = true;
-        break;
-      case 'windows':
-        platformIsDesktop = true;
-        break;
-      case 'macos':
-        platformIsDesktop = true;
-        break;
-      default:
-        platformIsDesktop = false;
-    }
-  }
-
-  return platformIsDesktop;
-}
-
-/// Convenience function to check if the app is running on a mobile device.
-bool platformIsMobile() => (!platformIsDesktop() && !kIsWeb) ? true : false;
