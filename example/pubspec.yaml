@@ -14,7 +14,7 @@ dependencies:
   helpers:
     path: ../
   cupertino_icons: ^1.0.2
-  http: ^0.13.5
+  http: ^1.0.0
   flutter_adaptive_scaffold: ^0.1.0
 
 dev_dependencies:
