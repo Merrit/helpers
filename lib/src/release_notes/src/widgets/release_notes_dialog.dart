@@ -112,6 +112,10 @@ class ReleaseNotesDialog extends StatelessWidget {
                 // See: https://github.com/flutter/flutter/issues/96806
                 listItemCrossAxisAlignment:
                     MarkdownListItemCrossAxisAlignment.start,
+                onTapLink: (text, href, title) {
+                  if (href == null) return;
+                  launchURL(href);
+                },
               ),
               const SizedBox(height: 16),
               Row(

@@ -16,6 +16,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   http: ^1.0.0
   flutter_adaptive_scaffold: ^0.1.0
+  url_launcher: ^6.0.9
 
 dev_dependencies:
   flutter_test:

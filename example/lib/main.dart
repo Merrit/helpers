@@ -3,6 +3,8 @@ import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 import 'package:helpers/helpers.dart';
 import 'package:http/http.dart' as http;
 
+import 'launch_url.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -156,10 +158,12 @@ class _ReleaseNotesExample extends StatelessWidget {
   }
 
   Future<void> _showReleaseNotes(BuildContext context) async {
-    final releaseNotesService =
-        ReleaseNotesService(client: http.Client(), repository: 'merrit/nyrna');
+    final releaseNotesService = ReleaseNotesService(
+      client: http.Client(),
+      repository: 'merrit/unit_bargain_hunter',
+    );
 
-    final releaseNotes = await releaseNotesService.getReleaseNotes('v2.11.0');
+    final releaseNotes = await releaseNotesService.getReleaseNotes('v1.12.0');
     if (releaseNotes == null) return;
 
     // ignore until fixed:https://github.com/dart-lang/linter/issues/4007
@@ -173,7 +177,7 @@ class _ReleaseNotesExample extends StatelessWidget {
           releaseNotes: releaseNotes,
           showDonateButton: true,
           donateCallback: () {},
-          launchURL: (url) {},
+          launchURL: (url) => launchURL(url),
           onClose: () => Navigator.of(context).pop(),
         );
       },
