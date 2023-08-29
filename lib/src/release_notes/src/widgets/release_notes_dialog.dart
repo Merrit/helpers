@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:markdown/markdown.dart' show ExtensionSet;
 
 import '../../release_notes.dart';
 
@@ -106,12 +107,18 @@ class ReleaseNotesDialog extends StatelessWidget {
               donateCard,
               MarkdownBody(
                 data: releaseNotes.notes,
+
+                /// [ExtensionSet.gitHubWeb] enables rendering GitHub
+                /// style emoji, among other things. Eg. :smile:
+                extensionSet: ExtensionSet.gitHubWeb,
+
                 // Alignment = start is required as a workaround for a bug when
                 // an AlertDialog has a Row with crossAxisAlignment = baseline,
                 // which the Markdown widget uses.
                 // See: https://github.com/flutter/flutter/issues/96806
                 listItemCrossAxisAlignment:
                     MarkdownListItemCrossAxisAlignment.start,
+
                 onTapLink: (text, href, title) {
                   if (href == null) return;
                   launchURL(href);

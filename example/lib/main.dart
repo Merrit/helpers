@@ -20,6 +20,9 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         brightness: Brightness.dark,
         colorSchemeSeed: const Color.fromRGBO(0, 179, 255, 1),
+
+        /// Fallback font family needed to display emojis in color.
+        fontFamilyFallback: const ['Noto Color Emoji'],
       ),
       home: const HomePage(),
     );
@@ -160,10 +163,10 @@ class _ReleaseNotesExample extends StatelessWidget {
   Future<void> _showReleaseNotes(BuildContext context) async {
     final releaseNotesService = ReleaseNotesService(
       client: http.Client(),
-      repository: 'merrit/unit_bargain_hunter',
+      repository: 'merrit/nyrna',
     );
 
-    final releaseNotes = await releaseNotesService.getReleaseNotes('v1.12.0');
+    final releaseNotes = await releaseNotesService.getReleaseNotes('v2.17.0');
     if (releaseNotes == null) return;
 
     // ignore until fixed:https://github.com/dart-lang/linter/issues/4007
