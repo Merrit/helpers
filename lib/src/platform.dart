@@ -6,7 +6,7 @@ extension TargetPlatformHelper on TargetPlatform {
 
   /// Returns true if the platform is a desktop platform: Linux, macOS or Windows.
   bool get isDesktop =>
-      this == TargetPlatform.linux ||
+      !kIsWeb && this == TargetPlatform.linux ||
       this == TargetPlatform.macOS ||
       this == TargetPlatform.windows;
 
