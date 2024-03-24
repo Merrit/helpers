@@ -7,6 +7,7 @@ export 'media_query.dart';
 export 'platform.dart';
 export 'release_notes/release_notes.dart';
 export 'show_context_menu.dart';
+export 'snap.dart';
 export 'string.dart';
 export 'testing.dart';
 export 'text_editing_controller.dart';
