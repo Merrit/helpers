@@ -68,5 +68,13 @@ void main() {
         'https://github.com/owner/repo/releases/tag/v1.2.3',
       );
     });
+
+    test('getReleaseNotes returns null if the get request throws', () async {
+      when(() => client.get(any())).thenThrow(Exception());
+
+      final result = await service.getReleaseNotes('v1.2.3');
+
+      expect(result, isNull);
+    });
   });
 }

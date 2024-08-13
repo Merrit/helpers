@@ -26,7 +26,14 @@ class ReleaseNotesService {
   Future<ReleaseNotes?> getReleaseNotes(String version) async {
     final url =
         'https://api.github.com/repos/$repository/releases/tags/$version';
-    final response = await _client.get(Uri.parse(url));
+
+    final http.Response response;
+    try {
+      response = await _client.get(Uri.parse(url));
+    } catch (e) {
+      return null;
+    }
+
     if (response.statusCode != 200) return null;
 
     final json = jsonDecode(response.body);
