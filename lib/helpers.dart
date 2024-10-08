@@ -1,4 +1,4 @@
 /// Collection of helpers to make Dart & Flutter development easier.
-library helpers;
+library;
 
 export 'src/src.dart';

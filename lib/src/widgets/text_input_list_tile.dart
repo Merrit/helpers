@@ -14,7 +14,7 @@ class TextInputListTile extends StatefulWidget {
   final Function(String value) callback;
 
   const TextInputListTile({
-    Key? key,
+    super.key,
     this.debugLabel,
     this.editingPlaceholderText = false,
     this.focusedOpacity = 1.00,
@@ -24,7 +24,7 @@ class TextInputListTile extends StatefulWidget {
     this.textAlign = TextAlign.start,
     this.unfocusedOpacity = 0.50,
     required this.callback,
-  }) : super(key: key);
+  });
 
   @override
   State<TextInputListTile> createState() => _TextInputListTileState();

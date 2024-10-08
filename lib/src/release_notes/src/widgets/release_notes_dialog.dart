@@ -14,13 +14,13 @@ const String _kDonateRequest =
 /// The release text is rendered using the [MarkdownBody] widget.
 class ReleaseNotesDialog extends StatelessWidget {
   const ReleaseNotesDialog({
-    Key? key,
+    super.key,
     required this.releaseNotes,
     this.showDonateButton = true,
     required this.donateCallback,
     required this.launchURL,
     required this.onClose,
-  }) : super(key: key);
+  });
 
   /// The release notes to display.
   final ReleaseNotes releaseNotes;
