@@ -73,9 +73,10 @@ class ReleaseNotesDialog extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                ElevatedButton(
+                OutlinedButton.icon(
+                  icon: const Icon(Icons.favorite),
+                  label: const Text('Donate'),
                   onPressed: donateCallback,
-                  child: const Text('Donate'),
                 ),
               ],
             ),
