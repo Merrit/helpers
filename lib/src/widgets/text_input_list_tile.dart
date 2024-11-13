@@ -85,6 +85,7 @@ class _TextInputListTileState extends State<TextInputListTile> {
               focusColor: Colors.transparent,
               leading: widget.leading,
               title: TextField(
+                onTapOutside: (event) => focusNode.unfocus(),
                 controller: controller,
                 focusNode: focusNode,
                 enableInteractiveSelection: true,
